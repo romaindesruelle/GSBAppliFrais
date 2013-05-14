@@ -10,7 +10,7 @@
  * Teste si un quelconque visiteur est connecté
  * @return vrai ou faux 
  */
-function estConnecte(){
+function estConnecte() {
   return isset($_SESSION['idVisiteur']);
 }
 /**
@@ -20,7 +20,7 @@ function estConnecte(){
  * @param $nom
  * @param $prenom
  */
-function connecter($id,$nom,$prenom){
+function connecter($id,$nom,$prenom) {
 	$_SESSION['idVisiteur']= $id; 
 	$_SESSION['nom']= $nom;
 	$_SESSION['prenom']= $prenom;
@@ -28,7 +28,7 @@ function connecter($id,$nom,$prenom){
 /**
  * Détruit la session active
  */
-function deconnecter(){
+function deconnecter() {
 	session_destroy();
 }
 /**
@@ -37,7 +37,7 @@ function deconnecter(){
  * @param $madate au format  jj/mm/aaaa
  * @return la date au format anglais aaaa-mm-jj
 */
-function dateFrancaisVersAnglais($maDate){
+function dateFrancaisVersAnglais($maDate) {
 	@list($jour,$mois,$annee) = explode('/',$maDate);
 	return date('Y-m-d',mktime(0,0,0,$mois,$jour,$annee));
 }
@@ -47,7 +47,7 @@ function dateFrancaisVersAnglais($maDate){
  * @param $madate au format  aaaa-mm-jj
  * @return la date au format format français jj/mm/aaaa
 */
-function dateAnglaisVersFrancais($maDate){
+function dateAnglaisVersFrancais($maDate) {
    @list($annee,$mois,$jour)=explode('-',$maDate);
    $date="$jour"."/".$mois."/".$annee;
    return $date;
@@ -58,7 +58,7 @@ function dateAnglaisVersFrancais($maDate){
  * @param $date au format  jj/mm/aaaa
  * @return le mois au format aaaamm
 */
-function getMois($date){
+function getMois($date) {
 		@list($jour,$mois,$annee) = explode('/',$date);
 		if(strlen($mois) == 1){
 			$mois = "0".$mois;
@@ -86,8 +86,8 @@ function estEntierPositif($valeur) {
 */
 function estTableauEntiers($tabEntiers) {
 	$ok = true;
-	foreach($tabEntiers as $unEntier){
-		if(!estEntierPositif($unEntier)){
+	foreach ($tabEntiers as $unEntier) {
+		if (!estEntierPositif($unEntier)) {
 		 	$ok=false; 
 		}
 	}
@@ -99,7 +99,7 @@ function estTableauEntiers($tabEntiers) {
  * @param $dateTestee 
  * @return vrai ou faux
 */
-function estDateDepassee($dateTestee){
+function estDateDepassee($dateTestee) {
 	$dateActuelle=date("d/m/Y");
 	@list($jour,$mois,$annee) = explode('/',$dateActuelle);
 	$annee--;
@@ -113,23 +113,21 @@ function estDateDepassee($dateTestee){
  * @param $date 
  * @return vrai ou faux
 */
-function estDateValide($date){
+function estDateValide($date) {
 	$tabDate = explode('/',$date);
-	$dateOK = true;
+	$dateOK = true;//initialisation de la date a vrai
 	if (count($tabDate) != 3) {
-	    $dateOK = false;
-    }
-    else {
+	    $dateOK = false;//date fausse 
+        } else {
 		if (!estTableauEntiers($tabDate)) {
 			$dateOK = false;
-		}
-		else {
+		} else {
 			if (!checkdate($tabDate[1], $tabDate[0], $tabDate[2])) {
 				$dateOK = false;
 			}
-		}
-    }
-	return $dateOK;
+		  }
+          }
+	return $dateOK;//retour de la date
 }
 
 /**
@@ -138,7 +136,7 @@ function estDateValide($date){
  * @param $lesFrais 
  * @return vrai ou faux
 */
-function lesQteFraisValides($lesFrais){
+function lesQteFraisValides($lesFrais) {
 	return estTableauEntiers($lesFrais);
 }
 /**
@@ -150,40 +148,37 @@ function lesQteFraisValides($lesFrais){
  * @param $libelle 
  * @param $montant
  */
-function valideInfosFrais($dateFrais,$libelle,$montant){
-	if($dateFrais==""){
+function valideInfosFrais($dateFrais,$libelle,$montant) {
+	if($dateFrais==""){//si il n'y a pas de date entrée
 		ajouterErreur("Le champ date ne doit pas être vide");
-	}
-	else{
-		if(!estDatevalide($dateFrais)){
+	} else {
+		if(!estDatevalide($dateFrais)) {//si la date est valide
 			ajouterErreur("Date invalide");
-		}	
-		else{
-			if(estDateDepassee($dateFrais)){
+		} else {
+			if(estDateDepassee($dateFrais)) {//si la date est dépassée
 				ajouterErreur("date d'enregistrement du frais dépassé, plus de 1 an");
 			}			
-		}
-	}
-	if($libelle == ""){
+		  }
+	  }
+	if ($libelle == "") {//si il n'y a pas de libelle
 		ajouterErreur("Le champ description ne peut pas être vide");
 	}
-	if($montant == ""){
+	if ($montant == "") {//si il n'y a pas de montant
 		ajouterErreur("Le champ montant ne peut pas être vide");
 	}
-	else
-		if( !is_numeric($montant) ){
+	elseif( !is_numeric($montant)) {//si le montant n'est pas un nombre
 			ajouterErreur("Le champ montant doit être numérique");
-		}
+	}
 }
 /**
  * Ajoute le libellé d'une erreur au tableau des erreurs 
  
  * @param $msg : le libellé de l'erreur 
  */
-function ajouterErreur($msg){
-   if (! isset($_REQUEST['erreurs'])){
+function ajouterErreur($msg) {
+   if (! isset($_REQUEST['erreurs'])) {
       $_REQUEST['erreurs']=array();
-	} 
+   } 
    $_REQUEST['erreurs'][]=$msg;
 }
 /**
@@ -191,12 +186,11 @@ function ajouterErreur($msg){
  
  * @return le nombre d'erreurs
  */
-function nbErreurs(){
-   if (!isset($_REQUEST['erreurs'])){
+function nbErreurs() {
+   if (!isset($_REQUEST['erreurs'])) {
 	   return 0;
-	}
-	else{
+   } else{
 	   return count($_REQUEST['erreurs']);
-	}
+   }
 }
 ?>
